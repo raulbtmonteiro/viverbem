@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/users")
@@ -29,6 +30,20 @@ public class UserController {
     public List<UserModel> getAll(){
         List<UserModel> users = repository.findAll();
         return users;
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getUserById(@PathVariable Long id){
+        try {
+            Optional<UserModel> response = repository.findById(id);
+            if (response != null) {
+                return ResponseEntity.status(HttpStatus.OK).body(response);
+            } else {
+                return ResponseEntity.notFound().build();
+            }
+        }catch (Exception err){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro ao procurar objeto");
+        }
     }
 
     @PostMapping
