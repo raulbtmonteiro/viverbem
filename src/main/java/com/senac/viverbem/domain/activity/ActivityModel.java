@@ -1,11 +1,17 @@
 package com.senac.viverbem.domain.activity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 @Table(name = "activities")
 @Entity(name = "activities")
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
+@EqualsAndHashCode(of = "id")
 public class ActivityModel {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
