@@ -1,7 +1,6 @@
 package com.senac.viverbem.controller;
 
 import com.senac.viverbem.domain.address.AddressModel;
-import com.senac.viverbem.domain.address.AddressRepository;
 import com.senac.viverbem.domain.address.AddressRequestDTO;
 import com.senac.viverbem.domain.user.UserModel;
 import com.senac.viverbem.domain.user.UserRepository;
