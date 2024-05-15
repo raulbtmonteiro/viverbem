@@ -62,7 +62,7 @@ public class ActivityController {
     @DeleteMapping("/{id}")
     public ResponseEntity deleteActivity(@PathVariable Long id){
         try {
-            repository.deleteById(id);g
+            repository.deleteById(id);
             return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
         }catch (Exception err){
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro ao deletar objeto");
