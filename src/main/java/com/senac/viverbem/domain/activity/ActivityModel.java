@@ -22,11 +22,11 @@ public class ActivityModel {
     private Long local;
     private Long owner;
 
-    public ActivityModel(ActivityRequestDTO data) {
+    public ActivityModel(ActivityRequestDTO data, Long local) {
         this.title = data.title();
         this.description = data.description();
         this.datetime = data.datetime();
-        this.local = data.local();
+        this.local = local;
         this.owner = data.owner();
     }
 }

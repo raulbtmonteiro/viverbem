@@ -47,7 +47,7 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<?> createUser(@RequestBody UserRequestDTO data){
+    public ResponseEntity createUser(@RequestBody UserRequestDTO data){
         AddressRequestDTO address = new AddressRequestDTO(data);
         AddressModel createdAddress = addressService.createAddress(address);
         UserModel user = new UserModel(data, createdAddress.getId());
