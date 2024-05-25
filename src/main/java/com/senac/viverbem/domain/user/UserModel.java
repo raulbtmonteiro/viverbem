@@ -2,7 +2,6 @@ package com.senac.viverbem.domain.user;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.senac.viverbem.domain.activity.ActivityModel;
 import com.senac.viverbem.domain.address.AddressModel;
 import jakarta.persistence.*;
@@ -10,7 +9,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import org.springframework.boot.autoconfigure.amqp.RabbitConnectionDetails;
 
 import java.util.List;
 
@@ -31,6 +29,10 @@ public class UserModel {
     private String dateofbirth;
     private String email;
     private String gender;
+    private String cpf;
+    private String phone;
+    private String medications;
+    private String emergencycontact;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "address", referencedColumnName = "id")
@@ -46,6 +48,10 @@ public class UserModel {
         this.email = data.email();
         this.dateofbirth = data.dateofbirth();
         this.gender = data.gender();
+        this.cpf = data.cpf();
+        this.phone = data.phone();
+        this.medications = data.medications();
+        this.emergencycontact = data.emergencycontact();
         this.address = address;
     }
 
