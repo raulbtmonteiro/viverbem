@@ -1,12 +1,22 @@
 package com.senac.viverbem.service;
 
 import com.senac.viverbem.domain.activity.ActivityModel;
+import com.senac.viverbem.domain.user.UserModel;
 import org.springframework.stereotype.Service;
+
+import javax.swing.text.html.Option;
+import java.util.Optional;
 
 @Service
 public class ActivityService {
 
-    public static ActivityModel updateActivity(String path, String value, ActivityModel activity){
+    private final UserService userService;
+
+    public ActivityService(UserService userService) {
+        this.userService = userService;
+    }
+
+    public ActivityModel updateActivity(String path, String value, ActivityModel activity){
         switch (path){
             case "title":
                 activity.setTitle(value);
@@ -17,11 +27,11 @@ public class ActivityService {
             case "datetime":
                 activity.setDatetime(value);
                 break;
-            case "local":
-                //activity.setLocal(Long.parseLong(value));
-               break;
             case "owner":
-                //activity.setOwner(Long.parseLong(value));
+                Optional<UserModel> newowner = userService.getUser(Long.parseLong(value));
+                if(newowner.isPresent()){
+                    activity.setOwner(newowner.get());
+                }
                 break;
             default:
                 break;

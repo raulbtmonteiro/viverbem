@@ -33,11 +33,11 @@ public class ActivityModel {
     @JoinColumn(name = "owner", referencedColumnName = "id")
     private UserModel owner;
 
-    public ActivityModel(ActivityRequestDTO data, AddressModel local) {
+    public ActivityModel(ActivityRequestDTO data, AddressModel local, UserModel owner) {
         this.title = data.title();
         this.description = data.description();
         this.datetime = data.datetime();
         this.local = local;
-        this.owner = data.owner();
+        this.owner = owner;
     }
 }

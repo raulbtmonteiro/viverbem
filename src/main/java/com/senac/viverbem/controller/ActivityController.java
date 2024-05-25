@@ -6,8 +6,10 @@ import com.senac.viverbem.domain.activity.ActivityRepository;
 import com.senac.viverbem.domain.activity.ActivityRequestDTO;
 import com.senac.viverbem.domain.address.AddressModel;
 import com.senac.viverbem.domain.address.AddressRequestDTO;
+import com.senac.viverbem.domain.user.UserModel;
 import com.senac.viverbem.service.ActivityService;
 import com.senac.viverbem.service.AddressService;
+import com.senac.viverbem.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,10 +26,12 @@ public class ActivityController {
     private ActivityRepository repository;
     private final AddressService addressService;
     private final ActivityService activityService;
+    private final UserService userService;
 
-    public ActivityController(AddressService addressService, ActivityService activityService) {
+    public ActivityController(AddressService addressService, ActivityService activityService, UserService userService) {
         this.addressService = addressService;
         this.activityService = activityService;
+        this.userService = userService;
     }
 
     @GetMapping
@@ -52,11 +56,20 @@ public class ActivityController {
 
     @PostMapping
     public ResponseEntity createActivity(@RequestBody ActivityRequestDTO data){
-        AddressRequestDTO address = new AddressRequestDTO(data);
-        AddressModel createdAddress = addressService.createAddress(address);
-        ActivityModel activity = new ActivityModel(data, createdAddress);
-        ActivityModel response = repository.save(activity);
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        try{
+            AddressRequestDTO address = new AddressRequestDTO(data);
+            AddressModel createdAddress = addressService.createAddress(address);
+            Optional<UserModel> owner = userService.getUser(data.owner());
+            if(owner.isPresent()){
+                ActivityModel activity = new ActivityModel(data, createdAddress, owner.get());
+                ActivityModel response = repository.save(activity);
+                return ResponseEntity.status(HttpStatus.CREATED).body(response);
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Usuário não encontrado");
+            }
+        } catch (Exception err){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro ao criar atividade");
+        }
     }
 
     @DeleteMapping("/{id}")
