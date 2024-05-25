@@ -50,10 +50,8 @@ public class UserController {
     public ResponseEntity createUser(@RequestBody UserRequestDTO data){
         AddressRequestDTO address = new AddressRequestDTO(data);
         AddressModel createdAddress = addressService.createAddress(address);
-        UserModel user = new UserModel(data, createdAddress.getId());
-        System.out.print(user);
+        UserModel user = new UserModel(data, createdAddress);
         UserModel response = repository.save(user);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
-
 }

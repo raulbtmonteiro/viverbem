@@ -54,7 +54,7 @@ public class ActivityController {
     public ResponseEntity createActivity(@RequestBody ActivityRequestDTO data){
         AddressRequestDTO address = new AddressRequestDTO(data);
         AddressModel createdAddress = addressService.createAddress(address);
-        ActivityModel activity = new ActivityModel(data, createdAddress.getId());
+        ActivityModel activity = new ActivityModel(data, createdAddress);
         ActivityModel response = repository.save(activity);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
@@ -75,6 +75,17 @@ public class ActivityController {
             Optional<ActivityModel> activity = repository.findById(id);
             if (activity.isPresent()) {
                 ActivityModel activityModel = activity.get();
+                String path = patchRequest.path.toString();
+                if(path.equals("street") || path.equals("postal_code") || path.equals("neighborhood") || path.equals("city") || path.equals("state") || path.equals("country")){
+                    Optional<AddressModel> address = addressService.findAddressById(activity.get().getId());
+                    if(address.isPresent()) {
+                        AddressModel newAddress = addressService.updateAddressModel(patchRequest.path, patchRequest.value,address.get());
+                        AddressModel response = addressService.updateAddress(newAddress);
+                        return ResponseEntity.status(HttpStatus.OK).body(response);
+                    } else {
+                        return ResponseEntity.notFound().build();
+                    }
+                }
                 ActivityModel newActivity = activityService.updateActivity(patchRequest.path, patchRequest.value, activityModel);
                 ActivityModel response = repository.save(newActivity);
                 return ResponseEntity.status(HttpStatus.OK).body(response);

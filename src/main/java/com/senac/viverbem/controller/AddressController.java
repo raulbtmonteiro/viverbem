@@ -73,7 +73,7 @@ public class AddressController {
             Optional<AddressModel> address = repository.findById(id);
             if (address.isPresent()) {
                 AddressModel addressModel = address.get();
-                AddressModel newAddress = AddressService.updateAddress(patchRequest.path, patchRequest.value, addressModel);
+                AddressModel newAddress = AddressService.updateAddressModel(patchRequest.path, patchRequest.value, addressModel);
                 AddressModel response = repository.save(newAddress);
                 return ResponseEntity.status(HttpStatus.OK).body(response);
             } else {

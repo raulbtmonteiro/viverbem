@@ -21,7 +21,15 @@ public class AddressService {
         return repository.save(address);
     }
 
-    public static AddressModel updateAddress(String path, String value, AddressModel address){
+    public Optional<AddressModel> findAddressById(Long id) {
+        return repository.findById(id);
+    }
+
+    public AddressModel updateAddress(AddressModel address){
+        return repository.save(address);
+    }
+
+    public static AddressModel updateAddressModel(String path, String value, AddressModel address){
         switch (path){
             case "street":
                 address.setStreet(value);

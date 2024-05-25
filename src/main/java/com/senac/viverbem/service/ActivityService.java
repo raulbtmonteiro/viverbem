@@ -18,10 +18,10 @@ public class ActivityService {
                 activity.setDatetime(value);
                 break;
             case "local":
-                activity.setLocal(Long.parseLong(value));
+                //activity.setLocal(Long.parseLong(value));
                break;
             case "owner":
-                activity.setOwner(Long.parseLong(value));
+                //activity.setOwner(Long.parseLong(value));
                 break;
             default:
                 break;

@@ -1,10 +1,18 @@
 package com.senac.viverbem.domain.user;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.senac.viverbem.domain.activity.ActivityModel;
+import com.senac.viverbem.domain.address.AddressModel;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import org.springframework.boot.autoconfigure.amqp.RabbitConnectionDetails;
+
+import java.util.List;
 
 @Table(name = "users")
 @Entity(name = "users")
@@ -12,6 +20,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(of = "id")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class UserModel {
 
     @Id
@@ -22,9 +31,16 @@ public class UserModel {
     private String dateofbirth;
     private String email;
     private String gender;
-    private Long address;
 
-    public UserModel(UserRequestDTO data, Long address){
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "address", referencedColumnName = "id")
+    private AddressModel address;
+
+    @OneToMany(mappedBy = "owner", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JsonIgnore
+    private List<ActivityModel> activities;
+
+    public UserModel(UserRequestDTO data, AddressModel address){
         this.firstname = data.firstname();
         this.lastname = data.lastname();
         this.email = data.email();
