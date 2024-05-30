@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.senac.viverbem.domain.activity.ActivityModel;
 import com.senac.viverbem.domain.address.AddressModel;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -27,7 +28,16 @@ public class UserModel {
     private String firstname;
     private String lastname;
     private String dateofbirth;
+
+    @Column(nullable = false, unique = true)
+    @NotBlank
     private String email;
+
+    @Column(nullable = false)
+    @NotBlank
+    @JsonIgnore
+    private String password;
+
     private String gender;
     private String cpf;
     private String phone;
@@ -46,6 +56,7 @@ public class UserModel {
         this.firstname = data.firstname();
         this.lastname = data.lastname();
         this.email = data.email();
+        this.password = data.password();
         this.dateofbirth = data.dateofbirth();
         this.gender = data.gender();
         this.cpf = data.cpf();
