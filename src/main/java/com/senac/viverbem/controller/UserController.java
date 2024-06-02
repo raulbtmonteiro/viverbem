@@ -2,6 +2,7 @@ package com.senac.viverbem.controller;
 
 import com.senac.viverbem.domain.address.AddressModel;
 import com.senac.viverbem.domain.address.AddressRequestDTO;
+import com.senac.viverbem.domain.user.PutRequestDTO;
 import com.senac.viverbem.domain.user.UserModel;
 import com.senac.viverbem.domain.user.UserRepository;
 import com.senac.viverbem.domain.user.UserRequestDTO;
@@ -54,6 +55,40 @@ public class UserController {
             UserModel user = new UserModel(data, createdAddress);
             UserModel response = repository.save(user);
             return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        } catch (Exception err){
+            return ResponseEntity.badRequest().body(err.getMessage());
+        }
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity updateUser(@RequestBody PutRequestDTO data){
+        try{
+            Optional<UserModel> user = repository.findById(Long.parseLong(data.id()));
+            if(user.isPresent()){
+                user.get().setFirstname(data.firstname());
+                user.get().setLastname(data.lastname());
+                user.get().setEmail(data.email());
+                user.get().setPassword(data.password());
+                user.get().setDateofbirth(data.dateofbirth());
+                user.get().setGender(data.gender());
+                user.get().setCpf(data.cpf());
+                user.get().setPhone(data.phone());
+                user.get().setMedications(data.medications());
+                user.get().setEmergencycontact(data.emergencycontact());
+                Optional<AddressModel> address = addressService.findAddressById(user.get().getAddress().getId());
+                if(address.isPresent()){
+                    address.get().setStreet(data.city());
+                    address.get().setCity(data.city());
+                    address.get().setPostal_code(data.postal_code());
+                    address.get().setNeighborhood(data.neighborhood());
+                    address.get().setState(data.state());
+                    address.get().setCountry(data.country());
+                    addressService.updateAddress(address.get());
+                }
+                UserModel updatedUser = repository.save(user.get());
+                return ResponseEntity.status(HttpStatus.OK).body(updatedUser);
+            }
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Usuário não encontrado");
         } catch (Exception err){
             return ResponseEntity.badRequest().body(err.getMessage());
         }
