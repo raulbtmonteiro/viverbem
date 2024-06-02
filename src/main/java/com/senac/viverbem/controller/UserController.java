@@ -10,6 +10,7 @@ import com.senac.viverbem.service.AddressService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -60,6 +61,7 @@ public class UserController {
         }
     }
 
+    @Transactional
     @PutMapping("/{id}")
     public ResponseEntity updateUser(@RequestBody PutRequestDTO data){
         try{
@@ -68,7 +70,6 @@ public class UserController {
                 user.get().setFirstname(data.firstname());
                 user.get().setLastname(data.lastname());
                 user.get().setEmail(data.email());
-                user.get().setPassword(data.password());
                 user.get().setDateofbirth(data.dateofbirth());
                 user.get().setGender(data.gender());
                 user.get().setCpf(data.cpf());
@@ -90,6 +91,7 @@ public class UserController {
             }
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Usuário não encontrado");
         } catch (Exception err){
+            System.out.println(err);
             return ResponseEntity.badRequest().body(err.getMessage());
         }
     }
