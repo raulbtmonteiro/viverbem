@@ -7,6 +7,7 @@ import com.senac.viverbem.domain.user.UserModel;
 import com.senac.viverbem.domain.user.UserRepository;
 import com.senac.viverbem.domain.user.UserRequestDTO;
 import com.senac.viverbem.service.AddressService;
+import com.senac.viverbem.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,24 +21,24 @@ import java.util.Optional;
 @RequestMapping("/users")
 public class UserController {
 
-    @Autowired
-    private UserRepository repository;
     private final AddressService addressService;
+    private final UserService userService;
 
-    public UserController(AddressService addressService) {
+    public UserController(AddressService addressService, UserService userService) {
         this.addressService = addressService;
+        this.userService = userService;
     }
 
     @GetMapping
     public List<UserModel> getAll(){
-        List<UserModel> users = repository.findAll();
+        List<UserModel> users = userService.getAllUsers();
         return users;
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getUserById(@PathVariable Long id){
         try {
-            Optional<UserModel> response = repository.findById(id);
+            Optional<UserModel> response = userService.getUserById(id);
             if (response != null) {
                 return ResponseEntity.status(HttpStatus.OK).body(response);
             } else {
@@ -54,7 +55,7 @@ public class UserController {
             AddressRequestDTO address = new AddressRequestDTO(data);
             AddressModel createdAddress = addressService.createAddress(address);
             UserModel user = new UserModel(data, createdAddress);
-            UserModel response = repository.save(user);
+            UserModel response = userService.saveUser(user);
             return ResponseEntity.status(HttpStatus.CREATED).body(response);
         } catch (Exception err){
             return ResponseEntity.badRequest().body(err.getMessage());
@@ -65,7 +66,7 @@ public class UserController {
     @PutMapping("/{id}")
     public ResponseEntity updateUser(@RequestBody PutRequestDTO data){
         try{
-            Optional<UserModel> user = repository.findById(Long.parseLong(data.id()));
+            Optional<UserModel> user = userService.getUserById(Long.parseLong(data.id()));
             if(user.isPresent()){
                 user.get().setFirstname(data.firstname());
                 user.get().setLastname(data.lastname());
@@ -86,7 +87,7 @@ public class UserController {
                     address.get().setCountry(data.country());
                     addressService.updateAddress(address.get());
                 }
-                UserModel updatedUser = repository.save(user.get());
+                UserModel updatedUser = userService.saveUser(user.get());
                 return ResponseEntity.status(HttpStatus.OK).body(updatedUser);
             }
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Usuário não encontrado");

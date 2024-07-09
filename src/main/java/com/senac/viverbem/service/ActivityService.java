@@ -28,7 +28,7 @@ public class ActivityService {
                 activity.setDatetime(value);
                 break;
             case "owner":
-                Optional<UserModel> newowner = userService.getUser(Long.parseLong(value));
+                Optional<UserModel> newowner = userService.getUserById(Long.parseLong(value));
                 if(newowner.isPresent()){
                     activity.setOwner(newowner.get());
                 }

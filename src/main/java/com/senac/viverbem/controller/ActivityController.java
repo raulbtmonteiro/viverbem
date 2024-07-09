@@ -59,7 +59,7 @@ public class ActivityController {
         try{
             AddressRequestDTO address = new AddressRequestDTO(data);
             AddressModel createdAddress = addressService.createAddress(address);
-            Optional<UserModel> owner = userService.getUser(data.owner());
+            Optional<UserModel> owner = userService.getUserById(data.owner());
             if(owner.isPresent()){
                 ActivityModel activity = new ActivityModel(data, createdAddress, owner.get());
                 ActivityModel response = repository.save(activity);
