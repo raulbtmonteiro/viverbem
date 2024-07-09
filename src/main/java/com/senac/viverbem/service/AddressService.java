@@ -5,6 +5,7 @@ import com.senac.viverbem.domain.address.AddressRepository;
 import com.senac.viverbem.domain.address.AddressRequestDTO;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -15,6 +16,8 @@ public class AddressService {
     public AddressService(AddressRepository repository) {
         this.repository = repository;
     }
+
+    public List<AddressModel> getAllAddresses() { return repository.findAll(); }
 
     public AddressModel createAddress(AddressRequestDTO data) {
         AddressModel address = new AddressModel(data);
@@ -28,6 +31,8 @@ public class AddressService {
     public AddressModel updateAddress(AddressModel address){
         return repository.save(address);
     }
+
+    public void deleteAddress(Long id) { repository.deleteById(id); }
 
     public static AddressModel updateAddressModel(String path, String value, AddressModel address){
         switch (path){

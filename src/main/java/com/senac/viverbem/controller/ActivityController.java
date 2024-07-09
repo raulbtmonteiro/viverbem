@@ -22,8 +22,6 @@ import java.util.Optional;
 @RequestMapping("/activities")
 public class ActivityController {
 
-    @Autowired
-    private ActivityRepository repository;
     private final AddressService addressService;
     private final ActivityService activityService;
     private final UserService userService;
@@ -36,14 +34,14 @@ public class ActivityController {
 
     @GetMapping
     public List<ActivityModel> getAll(){
-        List<ActivityModel> activities = repository.findAll();
+        List<ActivityModel> activities = activityService.getAllActivities();
         return activities;
     }
 
     @GetMapping("/{id}")
     public ResponseEntity getActivityById(@PathVariable Long id){
         try {
-            Optional<ActivityModel> response = repository.findById(id);
+            Optional<ActivityModel> response = activityService.getActivityById(id);
             if (response != null) {
                 return ResponseEntity.status(HttpStatus.OK).body(response);
             } else {
@@ -62,7 +60,7 @@ public class ActivityController {
             Optional<UserModel> owner = userService.getUserById(data.owner());
             if(owner.isPresent()){
                 ActivityModel activity = new ActivityModel(data, createdAddress, owner.get());
-                ActivityModel response = repository.save(activity);
+                ActivityModel response = activityService.saveActivity(activity);
                 return ResponseEntity.status(HttpStatus.CREATED).body(response);
             } else {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Usuário não encontrado");
@@ -75,7 +73,7 @@ public class ActivityController {
     @DeleteMapping("/{id}")
     public ResponseEntity deleteActivity(@PathVariable Long id){
         try {
-            repository.deleteById(id);
+            activityService.deleteActivity(id);
             return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
         }catch (Exception err){
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro ao deletar objeto");
@@ -85,7 +83,7 @@ public class ActivityController {
     @PatchMapping("/{id}")
     public ResponseEntity updateActivity(@PathVariable Long id, @RequestBody ActivityPatchRequest patchRequest){
         try {
-            Optional<ActivityModel> activity = repository.findById(id);
+            Optional<ActivityModel> activity = activityService.getActivityById(id);
             if (activity.isPresent()) {
                 ActivityModel activityModel = activity.get();
                 String path = patchRequest.path.toString();
@@ -100,7 +98,7 @@ public class ActivityController {
                     }
                 }
                 ActivityModel newActivity = activityService.updateActivity(patchRequest.path, patchRequest.value, activityModel);
-                ActivityModel response = repository.save(newActivity);
+                ActivityModel response = activityService.saveActivity(newActivity);
                 return ResponseEntity.status(HttpStatus.OK).body(response);
             } else {
                 return ResponseEntity.notFound().build();
