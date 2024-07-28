@@ -2,7 +2,6 @@ package com.senac.viverbem.controller;
 
 import com.senac.viverbem.domain.activity.ActivityModel;
 import com.senac.viverbem.domain.activity.ActivityPatchRequest;
-import com.senac.viverbem.domain.activity.ActivityRepository;
 import com.senac.viverbem.domain.activity.ActivityRequestDTO;
 import com.senac.viverbem.domain.address.AddressModel;
 import com.senac.viverbem.domain.address.AddressRequestDTO;
@@ -10,7 +9,6 @@ import com.senac.viverbem.domain.user.UserModel;
 import com.senac.viverbem.service.ActivityService;
 import com.senac.viverbem.service.AddressService;
 import com.senac.viverbem.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

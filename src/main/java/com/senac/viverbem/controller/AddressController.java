@@ -2,10 +2,8 @@ package com.senac.viverbem.controller;
 
 import com.senac.viverbem.domain.address.AddressModel;
 import com.senac.viverbem.domain.address.AddressPatchRequest;
-import com.senac.viverbem.domain.address.AddressRepository;
 import com.senac.viverbem.domain.address.AddressRequestDTO;
 import com.senac.viverbem.service.AddressService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
