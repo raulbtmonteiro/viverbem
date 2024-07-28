@@ -6,10 +6,7 @@ import com.senac.viverbem.domain.activity.ActivityModel;
 import com.senac.viverbem.domain.address.AddressModel;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -23,6 +20,7 @@ import java.util.List;
 @AllArgsConstructor
 @EqualsAndHashCode(of = "id")
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+@Builder
 public class UserModel implements UserDetails {
 
     @Id
@@ -47,7 +45,7 @@ public class UserModel implements UserDetails {
     private String medications;
     private String emergencycontact;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "address", referencedColumnName = "id")
     private AddressModel address;
 

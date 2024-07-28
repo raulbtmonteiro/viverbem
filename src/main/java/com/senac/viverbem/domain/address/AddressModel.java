@@ -2,10 +2,7 @@ package com.senac.viverbem.domain.address;
 
 import com.senac.viverbem.domain.user.UserRequestDTO;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Table(name = "addresses")
 @Entity(name = "addresses")
@@ -13,6 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(of = "id")
+@Builder
 public class AddressModel {
 
     @Id
