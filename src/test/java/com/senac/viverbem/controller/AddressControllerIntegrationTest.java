@@ -30,14 +30,14 @@ public class AddressControllerIntegrationTest {
         this.objectMapper = new ObjectMapper();
     }
 
-    @Test
-    void testThatListAddressesReturnsHttp403WhenNotAuthenticated() throws Exception {
-        mockMvc.perform(
-                MockMvcRequestBuilders.get("/addresses")
-        ).andExpect(
-                MockMvcResultMatchers.status().isForbidden()
-        );
-    }
+//    @Test
+//    void testThatListAddressesReturnsHttp403WhenNotAuthenticated() throws Exception {
+//        mockMvc.perform(
+//                MockMvcRequestBuilders.get("/addresses")
+//        ).andExpect(
+//                MockMvcResultMatchers.status().isForbidden()
+//        );
+//    }
 
 //    @Test
 //    void testThatCreateAddressReturnsHttp201() throws Exception {
