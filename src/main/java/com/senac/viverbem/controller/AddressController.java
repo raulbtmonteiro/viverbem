@@ -1,8 +1,7 @@
 package com.senac.viverbem.controller;
 
-import com.senac.viverbem.domain.address.AddressModel;
+import com.senac.viverbem.domain.address.AddressDTO;
 import com.senac.viverbem.domain.address.AddressPatchRequest;
-import com.senac.viverbem.domain.address.AddressRequestDTO;
 import com.senac.viverbem.service.AddressService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,29 +21,28 @@ public class AddressController {
     }
 
     @GetMapping
-    public List<AddressModel> getAll(){
-        List<AddressModel> address = addressService.getAllAddresses();
-        return address;
+    public List<AddressDTO> getAll(){
+        return addressService.getAllAddresses();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> getAddressById(@PathVariable Long id){
+    public ResponseEntity<AddressDTO> getAddressById(@PathVariable Long id){
         try {
-            Optional<AddressModel> response = addressService.findAddressById(id);
-            if (response != null) {
-                return ResponseEntity.status(HttpStatus.OK).body(response);
+            Optional<AddressDTO> response = addressService.findAddressById(id);
+            if (response.isPresent()) {
+                return ResponseEntity.status(HttpStatus.OK).body(response.get());
             } else {
                 return ResponseEntity.notFound().build();
             }
         }catch (Exception err){
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro ao procurar objeto");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 
     @PostMapping
-    public ResponseEntity<AddressModel> createAddress(@RequestBody AddressRequestDTO data){
-        try {
-            AddressModel response = addressService.createAddress(data);
+    public ResponseEntity<AddressDTO> createAddress(@RequestBody AddressDTO data){
+        try{
+            AddressDTO response = addressService.createAddress(data);
             return ResponseEntity.status(HttpStatus.CREATED).body(response);
         }catch (Exception error) {
             System.out.println(error);
@@ -65,12 +63,11 @@ public class AddressController {
     @PatchMapping("/{id}")
     public ResponseEntity updateAddress(@PathVariable Long id, @RequestBody AddressPatchRequest patchRequest){
         try {
-            Optional<AddressModel> address = addressService.findAddressById(id);
-            if (address.isPresent()) {
-                AddressModel addressModel = address.get();
-                AddressModel newAddress = addressService.updateAddressModel(patchRequest.path, patchRequest.value, addressModel);
-                AddressModel response = addressService.updateAddress(newAddress);
-                return ResponseEntity.status(HttpStatus.OK).body(response);
+            Optional<AddressDTO> response = addressService.findAddressById(id);
+            if (response.isPresent()) {
+                AddressDTO address = response.get();
+                AddressDTO newAddress = addressService.partialUpdate(patchRequest.path, patchRequest.value, address);
+                return ResponseEntity.status(HttpStatus.OK).body(newAddress);
             } else {
                 return ResponseEntity.notFound().build();
             }

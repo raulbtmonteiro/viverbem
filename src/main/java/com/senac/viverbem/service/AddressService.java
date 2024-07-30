@@ -1,8 +1,9 @@
 package com.senac.viverbem.service;
 
+import com.senac.viverbem.domain.address.AddressDTO;
 import com.senac.viverbem.domain.address.AddressModel;
 import com.senac.viverbem.domain.address.AddressRepository;
-import com.senac.viverbem.domain.address.AddressRequestDTO;
+import com.senac.viverbem.mappers.impl.AddressMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -12,29 +13,43 @@ import java.util.Optional;
 public class AddressService {
 
     private final AddressRepository repository;
+    private final AddressMapper addressMapper;
 
-    public AddressService(AddressRepository repository) {
+    public AddressService(AddressRepository repository, AddressMapper addressMapper) {
         this.repository = repository;
+        this.addressMapper = addressMapper;
     }
 
-    public List<AddressModel> getAllAddresses() { return repository.findAll(); }
-
-    public AddressModel createAddress(AddressRequestDTO data) {
-        AddressModel address = new AddressModel(data);
-        return repository.save(address);
+    public List<AddressDTO> getAllAddresses() {
+        List<AddressModel> allAddresses = repository.findAll();
+        return allAddresses.stream().map(addressMapper::mapTo).toList();
     }
 
-    public Optional<AddressModel> findAddressById(Long id) {
-        return repository.findById(id);
+    public AddressDTO createAddress(AddressDTO data) {
+        AddressModel address = addressMapper.mapFrom(data);
+        AddressModel savedAddress = repository.save(address);
+        return addressMapper.mapTo(savedAddress);
     }
 
-    public AddressModel updateAddress(AddressModel address){
-        return repository.save(address);
+    public Optional<AddressDTO> findAddressById(Long id) {
+        Optional<AddressModel> response = repository.findById(id);
+        if(response.isPresent()){
+            AddressDTO address = addressMapper.mapTo(response.get());
+            return Optional.ofNullable(address);
+        } else {
+            return Optional.empty();
+        }
+    }
+
+    public AddressDTO updateAddress(AddressDTO address){
+        AddressModel addressToUpdate = addressMapper.mapFrom(address);
+        AddressModel savedAddress =  repository.save(addressToUpdate);
+        return addressMapper.mapTo(savedAddress);
     }
 
     public void deleteAddress(Long id) { repository.deleteById(id); }
 
-    public static AddressModel updateAddressModel(String path, String value, AddressModel address){
+    public AddressDTO partialUpdate(String path, String value, AddressDTO address){
         switch (path){
             case "street":
                 address.setStreet(value);
@@ -57,6 +72,8 @@ public class AddressService {
             default:
                 break;
         }
-        return address;
+        AddressModel addressToUpdate = addressMapper.mapFrom(address);
+        AddressModel savedAddress = repository.save(addressToUpdate);
+        return addressMapper.mapTo(savedAddress);
     }
 }

@@ -23,7 +23,7 @@ public class ActivityModel {
     private String description;
     private String datetime;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "local", referencedColumnName = "id")
     private AddressModel local;
 

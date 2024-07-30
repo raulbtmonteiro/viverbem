@@ -1,14 +1,13 @@
 package com.senac.viverbem.domain.user;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.senac.viverbem.domain.address.AddressDTO;
+import lombok.*;
 
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString
 public class UserDTO {
 
     private Long id;
@@ -22,4 +21,5 @@ public class UserDTO {
     private String phone;
     private String medications;
     private String emergencycontact;
+    private AddressDTO address;
 }

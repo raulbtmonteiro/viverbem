@@ -1,10 +1,6 @@
 package com.senac.viverbem.controller;
 
-import com.senac.viverbem.domain.address.AddressModel;
-import com.senac.viverbem.domain.address.AddressRequestDTO;
-import com.senac.viverbem.domain.user.PutRequestDTO;
-import com.senac.viverbem.domain.user.UserModel;
-import com.senac.viverbem.domain.user.UserRequestDTO;
+import com.senac.viverbem.domain.user.UserDTO;
 import com.senac.viverbem.service.AddressService;
 import com.senac.viverbem.service.UserService;
 import org.springframework.http.HttpStatus;
@@ -28,15 +24,15 @@ public class UserController {
     }
 
     @GetMapping
-    public List<UserModel> getAll(){
-        List<UserModel> users = userService.getAllUsers();
+    public List<UserDTO> getAll(){
+        List<UserDTO> users = userService.getAllUsers();
         return users;
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getUserById(@PathVariable Long id){
         try {
-            Optional<UserModel> response = userService.getUserById(id);
+            Optional<UserDTO> response = userService.getUserById(id);
             if (response != null) {
                 return ResponseEntity.status(HttpStatus.OK).body(response);
             } else {
@@ -48,12 +44,9 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity createUser(@RequestBody UserRequestDTO data){
+    public ResponseEntity createUser(@RequestBody UserDTO user){
         try {
-            AddressRequestDTO address = new AddressRequestDTO(data);
-            AddressModel createdAddress = addressService.createAddress(address);
-            UserModel user = new UserModel(data, createdAddress);
-            UserModel response = userService.saveUser(user);
+            UserDTO response = userService.saveUser(user);
             return ResponseEntity.status(HttpStatus.CREATED).body(response);
         } catch (Exception err){
             return ResponseEntity.badRequest().body(err.getMessage());
@@ -62,30 +55,31 @@ public class UserController {
 
     @Transactional
     @PutMapping("/{id}")
-    public ResponseEntity updateUser(@RequestBody PutRequestDTO data){
+    public ResponseEntity updateUser(@RequestBody UserDTO data){
         try{
-            Optional<UserModel> user = userService.getUserById(Long.parseLong(data.id()));
+            Optional<UserDTO> user = userService.getUserById(data.getId());
             if(user.isPresent()){
-                user.get().setFirstname(data.firstname());
-                user.get().setLastname(data.lastname());
-                user.get().setEmail(data.email());
-                user.get().setDateofbirth(data.dateofbirth());
-                user.get().setGender(data.gender());
-                user.get().setCpf(data.cpf());
-                user.get().setPhone(data.phone());
-                user.get().setMedications(data.medications());
-                user.get().setEmergencycontact(data.emergencycontact());
-                Optional<AddressModel> address = addressService.findAddressById(user.get().getAddress().getId());
-                if(address.isPresent()){
-                    address.get().setStreet(data.city());
-                    address.get().setCity(data.city());
-                    address.get().setPostal_code(data.postal_code());
-                    address.get().setNeighborhood(data.neighborhood());
-                    address.get().setState(data.state());
-                    address.get().setCountry(data.country());
-                    addressService.updateAddress(address.get());
-                }
-                UserModel updatedUser = userService.saveUser(user.get());
+                user.get().setFirstname(data.getFirstname());
+                user.get().setLastname(data.getLastname());
+                user.get().setEmail(data.getEmail());
+                user.get().setDateofbirth(data.getDateofbirth());
+                user.get().setGender(data.getGender());
+                user.get().setCpf(data.getCpf());
+                user.get().setPhone(data.getPhone());
+                user.get().setMedications(data.getMedications());
+                user.get().setEmergencycontact(data.getEmergencycontact());
+                user.get().setAddress(data.getAddress());
+//                Optional<AddressModel> address = addressService.findAddressById(user.get().getAddress().getId());
+//                if(address.isPresent()){
+//                    address.get().setStreet(data.city());
+//                    address.get().setCity(data.city());
+//                    address.get().setPostal_code(data.postal_code());
+//                    address.get().setNeighborhood(data.neighborhood());
+//                    address.get().setState(data.state());
+//                    address.get().setCountry(data.country());
+//                    addressService.updateAddress(address.get());
+//                }
+                UserDTO updatedUser = userService.saveUser(user.get());
                 return ResponseEntity.status(HttpStatus.OK).body(updatedUser);
             }
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Usuário não encontrado");

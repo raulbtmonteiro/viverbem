@@ -1,11 +1,6 @@
 package com.senac.viverbem.controller;
 
-import com.senac.viverbem.domain.activity.ActivityModel;
-import com.senac.viverbem.domain.activity.ActivityPatchRequest;
-import com.senac.viverbem.domain.activity.ActivityRequestDTO;
-import com.senac.viverbem.domain.address.AddressModel;
-import com.senac.viverbem.domain.address.AddressRequestDTO;
-import com.senac.viverbem.domain.user.UserModel;
+import com.senac.viverbem.domain.activity.ActivityDTO;
 import com.senac.viverbem.service.ActivityService;
 import com.senac.viverbem.service.AddressService;
 import com.senac.viverbem.service.UserService;
@@ -31,40 +26,31 @@ public class ActivityController {
     }
 
     @GetMapping
-    public List<ActivityModel> getAll(){
-        List<ActivityModel> activities = activityService.getAllActivities();
-        return activities;
+    public List<ActivityDTO> getAll(){
+        return activityService.getAllActivities();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity getActivityById(@PathVariable Long id){
+    public ResponseEntity<ActivityDTO> getActivityById(@PathVariable Long id){
         try {
-            Optional<ActivityModel> response = activityService.getActivityById(id);
-            if (response != null) {
-                return ResponseEntity.status(HttpStatus.OK).body(response);
+            Optional<ActivityDTO> response = activityService.getActivityById(id);
+            if (response.isPresent()) {
+                return ResponseEntity.status(HttpStatus.OK).body(response.get());
             } else {
                 return ResponseEntity.notFound().build();
             }
         }catch (Exception err){
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro ao procurar objeto");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 
     @PostMapping
-    public ResponseEntity createActivity(@RequestBody ActivityRequestDTO data){
+    public ResponseEntity<ActivityDTO> createActivity(@RequestBody ActivityDTO data){
         try{
-            AddressRequestDTO address = new AddressRequestDTO(data);
-            AddressModel createdAddress = addressService.createAddress(address);
-            Optional<UserModel> owner = userService.getUserById(data.owner());
-            if(owner.isPresent()){
-                ActivityModel activity = new ActivityModel(data, createdAddress, owner.get());
-                ActivityModel response = activityService.saveActivity(activity);
-                return ResponseEntity.status(HttpStatus.CREATED).body(response);
-            } else {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Usuário não encontrado");
-            }
+            ActivityDTO activity = activityService.saveActivity(data);
+            return ResponseEntity.status(HttpStatus.CREATED).body(activity);
         } catch (Exception err){
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro ao criar atividade");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 
@@ -78,32 +64,32 @@ public class ActivityController {
         }
     }
 
-    @PatchMapping("/{id}")
-    public ResponseEntity updateActivity(@PathVariable Long id, @RequestBody ActivityPatchRequest patchRequest){
-        try {
-            Optional<ActivityModel> activity = activityService.getActivityById(id);
-            if (activity.isPresent()) {
-                ActivityModel activityModel = activity.get();
-                String path = patchRequest.path.toString();
-                if(path.equals("street") || path.equals("postal_code") || path.equals("neighborhood") || path.equals("city") || path.equals("state") || path.equals("country")){
-                    Optional<AddressModel> address = addressService.findAddressById(activity.get().getId());
-                    if(address.isPresent()) {
-                        AddressModel newAddress = addressService.updateAddressModel(patchRequest.path, patchRequest.value,address.get());
-                        AddressModel response = addressService.updateAddress(newAddress);
-                        return ResponseEntity.status(HttpStatus.OK).body(response);
-                    } else {
-                        return ResponseEntity.notFound().build();
-                    }
-                }
-                ActivityModel newActivity = activityService.updateActivity(patchRequest.path, patchRequest.value, activityModel);
-                ActivityModel response = activityService.saveActivity(newActivity);
-                return ResponseEntity.status(HttpStatus.OK).body(response);
-            } else {
-                return ResponseEntity.notFound().build();
-            }
-        }catch (Exception err){
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro ao atualizar objeto");
-        }
-    }
+//    @PatchMapping("/{id}")
+//    public ResponseEntity updateActivity(@PathVariable Long id, @RequestBody ActivityPatchRequest patchRequest){
+//        try {
+//            Optional<ActivityDTO> activity = activityService.getActivityById(id);
+//            if (activity.isPresent()) {
+//                ActivityDTO activityDTO = activity.get();
+//                String path = patchRequest.path.toString();
+//                if(path.equals("street") || path.equals("postal_code") || path.equals("neighborhood") || path.equals("city") || path.equals("state") || path.equals("country")){
+//                    Optional<AddressModel> address = addressService.findAddressById(activity.get().getId());
+//                    if(address.isPresent()) {
+//                        AddressModel newAddress = addressService.partialUptade(patchRequest.path, patchRequest.value,address.get());
+//                        AddressModel response = addressService.updateAddress(newAddress);
+//                        return ResponseEntity.status(HttpStatus.OK).body(response);
+//                    } else {
+//                        return ResponseEntity.notFound().build();
+//                    }
+//                }
+//                ActivityModel newActivity = activityService.partialUptade(patchRequest.path, patchRequest.value, activityModel);
+//                ActivityModel response = activityService.saveActivity(newActivity);
+//                return ResponseEntity.status(HttpStatus.OK).body(response);
+//            } else {
+//                return ResponseEntity.notFound().build();
+//            }
+//        }catch (Exception err){
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro ao atualizar objeto");
+//        }
+//    }
 
 }

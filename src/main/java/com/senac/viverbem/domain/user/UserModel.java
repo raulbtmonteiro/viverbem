@@ -2,7 +2,6 @@ package com.senac.viverbem.domain.user;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.senac.viverbem.domain.activity.ActivityModel;
 import com.senac.viverbem.domain.address.AddressModel;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
@@ -11,7 +10,6 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
-import java.util.List;
 
 @Table(name = "users")
 @Entity(name = "users")
@@ -45,27 +43,9 @@ public class UserModel implements UserDetails {
     private String medications;
     private String emergencycontact;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "address", referencedColumnName = "id")
     private AddressModel address;
-
-    @OneToMany(mappedBy = "owner", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JsonIgnore
-    private List<ActivityModel> activities;
-
-    public UserModel(UserRequestDTO data, AddressModel address){
-        this.firstname = data.firstname();
-        this.lastname = data.lastname();
-        this.email = data.email();
-        this.password = data.password();
-        this.dateofbirth = data.dateofbirth();
-        this.gender = data.gender();
-        this.cpf = data.cpf();
-        this.phone = data.phone();
-        this.medications = data.medications();
-        this.emergencycontact = data.emergencycontact();
-        this.address = address;
-    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

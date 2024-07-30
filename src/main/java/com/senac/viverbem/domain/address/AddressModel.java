@@ -23,22 +23,4 @@ public class AddressModel {
     private String state;
     private String country;
 
-    public AddressModel(AddressRequestDTO data){
-        this.street = data.street();
-        this.postal_code = data.postal_code();
-        this.neighborhood = data.neighborhood();
-        this.city = data.city();
-        this.state = data.state();
-        this.country = data.country();
-    }
-
-    public AddressModel(UserRequestDTO data){
-        this.street = data.street();
-        this.postal_code = data.postal_code();
-        this.neighborhood = data.neighborhood();
-        this.city = data.city();
-        this.state = data.state();
-        this.country = data.country();
-    }
-
 }

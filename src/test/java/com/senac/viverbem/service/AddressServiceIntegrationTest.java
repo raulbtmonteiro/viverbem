@@ -1,8 +1,7 @@
-package com.senac.viverbem.domain;
+package com.senac.viverbem.service;
 
 import com.senac.viverbem.TestDataUtil;
-import com.senac.viverbem.domain.address.AddressModel;
-import com.senac.viverbem.domain.address.AddressRepository;
+import com.senac.viverbem.domain.address.AddressDTO;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,34 +17,34 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
-public class AddressRepositoryIntegrationTest {
+public class AddressServiceIntegrationTest {
 
-    private AddressRepository underTest;
+    private AddressService underTest;
 
     @Autowired
-    public AddressRepositoryIntegrationTest(AddressRepository underTest){
+    public AddressServiceIntegrationTest(AddressService underTest){
         this.underTest = underTest;
     }
 
     @Test
     public void testThatAddressCanBeCreatedAndRecalled(){
-        AddressModel address = TestDataUtil.createTestAddressA();
-        underTest.save(address);
-        Optional<AddressModel> result = underTest.findById(address.getId());
+        AddressDTO address = TestDataUtil.createTestAddressA();
+        underTest.createAddress(address);
+        Optional<AddressDTO> result = underTest.findAddressById(address.getId());
         assertThat(result).isPresent();
         assertThat(result.get()).isEqualTo(address);
     }
 
     @Test
     public void testThatMultipleAddressesCanBeCreatedAndRecalled(){
-        AddressModel addressA = TestDataUtil.createTestAddressA();
-        underTest.save(addressA);
-        AddressModel addressB = TestDataUtil.createTestAddressB();
-        underTest.save(addressB);
-        AddressModel addressC = TestDataUtil.createTestAddressC();
-        underTest.save(addressC);
+        AddressDTO addressA = TestDataUtil.createTestAddressA();
+        underTest.createAddress(addressA);
+        AddressDTO addressB = TestDataUtil.createTestAddressB();
+        underTest.createAddress(addressB);
+        AddressDTO addressC = TestDataUtil.createTestAddressC();
+        underTest.createAddress(addressC);
 
-        List<AddressModel> result = underTest.findAll();
+        List<AddressDTO> result = underTest.getAllAddresses();
         assertThat(result)
                 .hasSize(3)
                 .containsOnly(addressA, addressB, addressC);
@@ -54,11 +53,11 @@ public class AddressRepositoryIntegrationTest {
 
     @Test
     public void testThatAddressCanBeUpdated(){
-        AddressModel address = TestDataUtil.createTestAddressA();
-        underTest.save(address);
+        AddressDTO address = TestDataUtil.createTestAddressA();
+        underTest.createAddress(address);
         address.setStreet("Updated street");
-        underTest.save(address);
-        Optional<AddressModel> result = underTest.findById(address.getId());
+        underTest.createAddress(address);
+        Optional<AddressDTO> result = underTest.findAddressById(address.getId());
         assertThat(result).isPresent();
         assertThat(result.get().getStreet()).isEqualTo("Updated street");
         assertThat(result.get()).isEqualTo(address);
@@ -66,14 +65,14 @@ public class AddressRepositoryIntegrationTest {
 
     @Test
     public void testThatAddressCanBeCreatedAndDeleted(){
-        AddressModel addressA = TestDataUtil.createTestAddressA();
-        underTest.save(addressA);
-        AddressModel addressB = TestDataUtil.createTestAddressB();
-        underTest.save(addressB);
+        AddressDTO addressA = TestDataUtil.createTestAddressA();
+        underTest.createAddress(addressA);
+        AddressDTO addressB = TestDataUtil.createTestAddressB();
+        underTest.createAddress(addressB);
 
-        underTest.deleteById(addressA.getId());
+        underTest.deleteAddress(addressA.getId());
 
-        List<AddressModel> result = underTest.findAll();
+        List<AddressDTO> result = underTest.getAllAddresses();
         assertThat(result)
                 .hasSize(1)
                 .containsOnly(addressB);
