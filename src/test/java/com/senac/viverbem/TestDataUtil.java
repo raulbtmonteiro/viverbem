@@ -1,18 +1,14 @@
 package com.senac.viverbem;
 
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.algorithms.Algorithm;
-import com.senac.viverbem.domain.activity.ActivityDTO;
-import com.senac.viverbem.domain.address.AddressDTO;
-import com.senac.viverbem.domain.user.UserDTO;
-
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
+import com.senac.viverbem.domain.activity.dto.ActivityPostDTO;
+import com.senac.viverbem.domain.address.dto.AddressDTO;
+import com.senac.viverbem.domain.user.dto.UserDTO;
+import com.senac.viverbem.domain.user.dto.UserPostDTO;
+import com.senac.viverbem.infra.security.TokenService;
+import com.senac.viverbem.mappers.impl.UserMapper;
+import com.senac.viverbem.service.UserService;
 
 public class TestDataUtil {
-
-    private static final String SECRET_KEY = "TESTE";
-    private static final long TOKEN_EXPIRATION_TIME_IN_HOURS = 2;
 
     private TestDataUtil(){
     }
@@ -89,8 +85,8 @@ public class TestDataUtil {
                 .build();
     }
 
-    public static UserDTO createTestUserA(AddressDTO address){
-        return UserDTO.builder()
+    public static UserPostDTO createTestUserA(AddressDTO address){
+        return UserPostDTO.builder()
                 .id(1l)
                 .cpf("123.456.789-01")
                 .firstname("John")
@@ -103,8 +99,8 @@ public class TestDataUtil {
                 .build();
     }
 
-    public static UserDTO createTestUserB(AddressDTO address){
-        return UserDTO.builder()
+    public static UserPostDTO createTestUserB(AddressDTO address){
+        return UserPostDTO.builder()
                 .id(2l)
                 .cpf("987.654.321-02")
                 .firstname("Ana")
@@ -117,8 +113,8 @@ public class TestDataUtil {
                 .build();
     }
 
-    public static UserDTO createTestUserC(AddressDTO address){
-        return UserDTO.builder()
+    public static UserPostDTO createTestUserC(AddressDTO address){
+        return UserPostDTO.builder()
                 .id(3l)
                 .cpf("427.876.965-03")
                 .firstname("George")
@@ -131,8 +127,8 @@ public class TestDataUtil {
                 .build();
     }
 
-    public static ActivityDTO createTestActivityA(AddressDTO address, UserDTO user){
-        return ActivityDTO.builder()
+    public static ActivityPostDTO createTestActivityA(AddressDTO address, Long user){
+        return ActivityPostDTO.builder()
                 .id(1l)
                 .title("First Activity")
                 .description("description test 1")
@@ -141,8 +137,8 @@ public class TestDataUtil {
                 .build();
     }
 
-    public static ActivityDTO createTestActivityB(AddressDTO address, UserDTO user) {
-        return ActivityDTO.builder()
+    public static ActivityPostDTO createTestActivityB(AddressDTO address, Long user) {
+        return ActivityPostDTO.builder()
                 .id(2l)
                 .title("Second Activity")
                 .description("description test 2")
@@ -151,8 +147,8 @@ public class TestDataUtil {
                 .build();
     }
 
-    public static ActivityDTO createTestActivityC(AddressDTO address, UserDTO user) {
-        return ActivityDTO.builder()
+    public static ActivityPostDTO createTestActivityC(AddressDTO address, Long user) {
+        return ActivityPostDTO.builder()
                 .id(3l)
                 .title("Third Activity")
                 .description("description test 3")
@@ -161,15 +157,12 @@ public class TestDataUtil {
                 .build();
     }
 
-    public static String generateTestToken(String username) {
-        return JWT.create()
-                .withIssuer("viverbem-auth-api")
-                .withSubject(username)
-                .withExpiresAt(
-                        LocalDateTime.now()
-                                .plusHours(TOKEN_EXPIRATION_TIME_IN_HOURS)
-                                .toInstant(ZoneOffset.of("-03:00"))
-                )
-                .sign(Algorithm.HMAC256(SECRET_KEY));
+    public static String generateTestToken(UserService userService, TokenService tokenService, UserMapper userMapper) {
+        AddressDTO address = TestDataUtil.createTestAddressA();
+        UserPostDTO user = TestDataUtil.createTestUserA(address);
+        userService.saveUser(user);
+        UserDTO userDTO = new UserDTO(user);
+        String token = tokenService.generateToken(userMapper.mapFrom(userDTO));
+        return token;
     }
 }

@@ -1,7 +1,7 @@
 package com.senac.viverbem.controller;
 
-import com.senac.viverbem.domain.address.AddressDTO;
-import com.senac.viverbem.domain.address.AddressPatchRequest;
+import com.senac.viverbem.domain.address.dto.AddressDTO;
+import com.senac.viverbem.domain.address.dto.AddressPatchRequestDTO;
 import com.senac.viverbem.service.AddressService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -61,7 +61,7 @@ public class AddressController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity updateAddress(@PathVariable Long id, @RequestBody AddressPatchRequest patchRequest){
+    public ResponseEntity updateAddress(@PathVariable Long id, @RequestBody AddressPatchRequestDTO patchRequest){
         try {
             Optional<AddressDTO> response = addressService.findAddressById(id);
             if (response.isPresent()) {

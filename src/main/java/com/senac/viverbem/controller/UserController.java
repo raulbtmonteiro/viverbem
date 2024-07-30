@@ -1,6 +1,7 @@
 package com.senac.viverbem.controller;
 
-import com.senac.viverbem.domain.user.UserDTO;
+import com.senac.viverbem.domain.user.dto.UserDTO;
+import com.senac.viverbem.domain.user.dto.UserPostDTO;
 import com.senac.viverbem.service.AddressService;
 import com.senac.viverbem.service.UserService;
 import org.springframework.http.HttpStatus;
@@ -44,7 +45,7 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity createUser(@RequestBody UserDTO user){
+    public ResponseEntity createUser(@RequestBody UserPostDTO user){
         try {
             UserDTO response = userService.saveUser(user);
             return ResponseEntity.status(HttpStatus.CREATED).body(response);
@@ -53,39 +54,39 @@ public class UserController {
         }
     }
 
-    @Transactional
-    @PutMapping("/{id}")
-    public ResponseEntity updateUser(@RequestBody UserDTO data){
-        try{
-            Optional<UserDTO> user = userService.getUserById(data.getId());
-            if(user.isPresent()){
-                user.get().setFirstname(data.getFirstname());
-                user.get().setLastname(data.getLastname());
-                user.get().setEmail(data.getEmail());
-                user.get().setDateofbirth(data.getDateofbirth());
-                user.get().setGender(data.getGender());
-                user.get().setCpf(data.getCpf());
-                user.get().setPhone(data.getPhone());
-                user.get().setMedications(data.getMedications());
-                user.get().setEmergencycontact(data.getEmergencycontact());
-                user.get().setAddress(data.getAddress());
-//                Optional<AddressModel> address = addressService.findAddressById(user.get().getAddress().getId());
-//                if(address.isPresent()){
-//                    address.get().setStreet(data.city());
-//                    address.get().setCity(data.city());
-//                    address.get().setPostal_code(data.postal_code());
-//                    address.get().setNeighborhood(data.neighborhood());
-//                    address.get().setState(data.state());
-//                    address.get().setCountry(data.country());
-//                    addressService.updateAddress(address.get());
-//                }
-                UserDTO updatedUser = userService.saveUser(user.get());
-                return ResponseEntity.status(HttpStatus.OK).body(updatedUser);
-            }
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Usuário não encontrado");
-        } catch (Exception err){
-            System.out.println(err);
-            return ResponseEntity.badRequest().body(err.getMessage());
-        }
-    }
+//    @Transactional
+//    @PutMapping("/{id}")
+//    public ResponseEntity updateUser(@RequestBody UserDTO data){
+//        try{
+//            Optional<UserDTO> user = userService.getUserById(data.getId());
+//            if(user.isPresent()){
+//                user.get().setFirstname(data.getFirstname());
+//                user.get().setLastname(data.getLastname());
+//                user.get().setEmail(data.getEmail());
+//                user.get().setDateofbirth(data.getDateofbirth());
+//                user.get().setGender(data.getGender());
+//                user.get().setCpf(data.getCpf());
+//                user.get().setPhone(data.getPhone());
+//                user.get().setMedications(data.getMedications());
+//                user.get().setEmergencycontact(data.getEmergencycontact());
+//                user.get().setAddress(data.getAddress());
+////                Optional<AddressModel> address = addressService.findAddressById(user.get().getAddress().getId());
+////                if(address.isPresent()){
+////                    address.get().setStreet(data.city());
+////                    address.get().setCity(data.city());
+////                    address.get().setPostal_code(data.postal_code());
+////                    address.get().setNeighborhood(data.neighborhood());
+////                    address.get().setState(data.state());
+////                    address.get().setCountry(data.country());
+////                    addressService.updateAddress(address.get());
+////                }
+//                UserDTO updatedUser = userService.saveUser(user.get());
+//                return ResponseEntity.status(HttpStatus.OK).body(updatedUser);
+//            }
+//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Usuário não encontrado");
+//        } catch (Exception err){
+//            System.out.println(err);
+//            return ResponseEntity.badRequest().body(err.getMessage());
+//        }
+//    }
 }

@@ -1,8 +1,9 @@
 package com.senac.viverbem.service;
 
 import com.senac.viverbem.TestDataUtil;
-import com.senac.viverbem.domain.address.AddressDTO;
-import com.senac.viverbem.domain.user.UserDTO;
+import com.senac.viverbem.domain.address.dto.AddressDTO;
+import com.senac.viverbem.domain.user.dto.UserDTO;
+import com.senac.viverbem.domain.user.dto.UserPostDTO;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,11 +31,12 @@ public class UserServiceIntegrationTest {
     @Test
     public void testThatUserCanBeCreatedAndRecalled(){
         AddressDTO address = TestDataUtil.createTestAddressA();
-        UserDTO user = TestDataUtil.createTestUserA(address);
+        UserPostDTO user = TestDataUtil.createTestUserA(address);
         underTest.saveUser(user);
         Optional<UserDTO> result = underTest.getUserById(user.getId());
+        UserDTO sentUser = new UserDTO(user);
         assertThat(result).isPresent();
-        assertThat(result.get()).isEqualTo(user);
+        assertThat(result.get()).isEqualTo(sentUser);
     }
 
 //    @Test
@@ -50,50 +52,58 @@ public class UserServiceIntegrationTest {
     @Test
     public void testThatMultipleAddressesCanBeCreatedAndRecalled(){
         AddressDTO addressA = TestDataUtil.createTestAddressA();
-        UserDTO userA = TestDataUtil.createTestUserA(addressA);
+        UserPostDTO userA = TestDataUtil.createTestUserA(addressA);
         underTest.saveUser(userA);
         AddressDTO addressB = TestDataUtil.createTestAddressB();
-        UserDTO userB = TestDataUtil.createTestUserB(addressB);
+        UserPostDTO userB = TestDataUtil.createTestUserB(addressB);
         underTest.saveUser(userB);
         AddressDTO addressC = TestDataUtil.createTestAddressC();
-        UserDTO userC = TestDataUtil.createTestUserC(addressC);
+        UserPostDTO userC = TestDataUtil.createTestUserC(addressC);
         underTest.saveUser(userC);
 
         List<UserDTO> result = underTest.getAllUsers();
+
+        UserDTO sentUserA = new UserDTO(userA);
+        UserDTO sentUserB = new UserDTO(userB);
+        UserDTO sentUserC = new UserDTO(userC);
+
         assertThat(result)
                 .hasSize(3)
-                .containsOnly(userA, userB, userC);
+                .containsOnly(sentUserA, sentUserB, sentUserC);
 
     }
-
+//
     @Test
     public void testThatUserCanBeUpdated(){
         AddressDTO address = TestDataUtil.createTestAddressA();
-        UserDTO user = TestDataUtil.createTestUserA(address);
+        UserPostDTO user = TestDataUtil.createTestUserA(address);
         underTest.saveUser(user);
         user.setLastname("Updated last name");
         underTest.saveUser(user);
+        UserDTO sentUser = new UserDTO(user);
         Optional<UserDTO> result = underTest.getUserById(user.getId());
         assertThat(result).isPresent();
         assertThat(result.get().getLastname()).isEqualTo("Updated last name");
-        assertThat(result.get()).isEqualTo(user);
+        assertThat(result.get()).isEqualTo(sentUser);
     }
 
     @Test
     public void testThatUserCanBeCreatedAndDeleted(){
         AddressDTO addressA = TestDataUtil.createTestAddressA();
-        UserDTO userA = TestDataUtil.createTestUserA(addressA);
+        UserPostDTO userA = TestDataUtil.createTestUserA(addressA);
         underTest.saveUser(userA);
         AddressDTO addressB = TestDataUtil.createTestAddressB();
-        UserDTO userB = TestDataUtil.createTestUserB(addressB);
+        UserPostDTO userB = TestDataUtil.createTestUserB(addressB);
         underTest.saveUser(userB);
+
+        UserDTO sentUserB = new UserDTO(userB);
 
         underTest.deleteUser(userA.getId());
 
         List<UserDTO> result = underTest.getAllUsers();
         assertThat(result)
                 .hasSize(1)
-                .containsOnly(userB);
+                .containsOnly(sentUserB);
 
     }
 }

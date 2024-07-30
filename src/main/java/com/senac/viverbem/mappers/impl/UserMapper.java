@@ -1,6 +1,6 @@
 package com.senac.viverbem.mappers.impl;
 
-import com.senac.viverbem.domain.user.UserDTO;
+import com.senac.viverbem.domain.user.dto.UserDTO;
 import com.senac.viverbem.domain.user.UserModel;
 import com.senac.viverbem.mappers.Mapper;
 import org.modelmapper.ModelMapper;

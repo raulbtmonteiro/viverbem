@@ -1,4 +1,4 @@
-package com.senac.viverbem.domain.address;
+package com.senac.viverbem.domain.address.dto;
 
 
 import lombok.*;

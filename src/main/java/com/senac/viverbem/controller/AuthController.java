@@ -1,7 +1,7 @@
 package com.senac.viverbem.controller;
 
-import com.senac.viverbem.domain.user.AuthDTO;
-import com.senac.viverbem.domain.user.AuthResponseDTO;
+import com.senac.viverbem.domain.user.dto.AuthDTO;
+import com.senac.viverbem.domain.user.dto.AuthResponseDTO;
 import com.senac.viverbem.domain.user.UserModel;
 import com.senac.viverbem.infra.security.TokenService;
 import org.springframework.beans.factory.annotation.Autowired;

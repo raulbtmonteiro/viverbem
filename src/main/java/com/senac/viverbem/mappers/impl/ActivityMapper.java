@@ -1,6 +1,6 @@
 package com.senac.viverbem.mappers.impl;
 
-import com.senac.viverbem.domain.activity.ActivityDTO;
+import com.senac.viverbem.domain.activity.dto.ActivityDTO;
 import com.senac.viverbem.domain.activity.ActivityModel;
 import com.senac.viverbem.mappers.Mapper;
 import org.modelmapper.ModelMapper;

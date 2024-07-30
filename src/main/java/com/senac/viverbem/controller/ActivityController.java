@@ -1,6 +1,7 @@
 package com.senac.viverbem.controller;
 
-import com.senac.viverbem.domain.activity.ActivityDTO;
+import com.senac.viverbem.domain.activity.dto.ActivityDTO;
+import com.senac.viverbem.domain.activity.dto.ActivityPostDTO;
 import com.senac.viverbem.service.ActivityService;
 import com.senac.viverbem.service.AddressService;
 import com.senac.viverbem.service.UserService;
@@ -45,10 +46,14 @@ public class ActivityController {
     }
 
     @PostMapping
-    public ResponseEntity<ActivityDTO> createActivity(@RequestBody ActivityDTO data){
+    public ResponseEntity<ActivityDTO> createActivity(@RequestBody ActivityPostDTO data){
         try{
-            ActivityDTO activity = activityService.saveActivity(data);
-            return ResponseEntity.status(HttpStatus.CREATED).body(activity);
+            Optional<ActivityDTO> activity = activityService.saveActivity(data);
+            if(activity.isPresent()){
+                return ResponseEntity.status(HttpStatus.CREATED).body(activity.get());
+            } else {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+            }
         } catch (Exception err){
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }

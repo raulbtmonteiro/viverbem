@@ -1,8 +1,9 @@
 package com.senac.viverbem.service;
 
-import com.senac.viverbem.domain.user.UserDTO;
+import com.senac.viverbem.domain.user.dto.UserDTO;
 import com.senac.viverbem.domain.user.UserModel;
 import com.senac.viverbem.domain.user.UserRepository;
+import com.senac.viverbem.domain.user.dto.UserPostDTO;
 import com.senac.viverbem.mappers.impl.UserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -32,15 +33,38 @@ public class UserService {
         }
     }
 
+    public Optional<String> getPasswordById(Long id){
+        Optional<UserModel> user = repository.findById(id);
+        if(user.isPresent()){
+            return Optional.ofNullable(user.get().getPassword());
+        } else {
+            return Optional.empty();
+        }
+    }
+
     public List<UserDTO> getAllUsers() {
         List<UserModel> response = repository.findAll();
         return response.stream().map(userMapper::mapTo).toList();
     }
 
-    public UserDTO saveUser(UserDTO user) {
-        UserModel userModel = userMapper.mapFrom(user);
+    public UserDTO saveUser(UserPostDTO user) {
+        UserDTO newUser = new UserDTO(user);
+        UserModel userModel = userMapper.mapFrom(newUser);
+        userModel.setPassword(user.getPassword());
         UserModel savedUser = repository.save(userModel);
         return userMapper.mapTo(savedUser);
+    }
+
+    public Optional<UserDTO> updateUser(UserDTO user) {
+        Optional<String> password = getPasswordById(user.getId());
+        if(password.isPresent()){
+            UserModel userModel = userMapper.mapFrom(user);
+            userModel.setPassword(password.get());
+            UserModel savedUser = repository.save(userModel);
+            return Optional.ofNullable(userMapper.mapTo(savedUser));
+        } else {
+            return Optional.empty();
+        }
     }
 
     public void deleteUser(Long id) {

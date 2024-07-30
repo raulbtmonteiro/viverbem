@@ -1,11 +1,13 @@
 package com.senac.viverbem.service;
 
-import com.senac.viverbem.domain.activity.ActivityDTO;
+import com.senac.viverbem.domain.activity.dto.ActivityDTO;
 import com.senac.viverbem.domain.activity.ActivityModel;
 import com.senac.viverbem.domain.activity.ActivityRepository;
-import com.senac.viverbem.domain.address.AddressDTO;
-import com.senac.viverbem.domain.user.UserDTO;
+import com.senac.viverbem.domain.activity.dto.ActivityPostDTO;
+import com.senac.viverbem.domain.address.dto.AddressDTO;
+import com.senac.viverbem.domain.user.dto.UserDTO;
 import com.senac.viverbem.mappers.impl.ActivityMapper;
+import com.senac.viverbem.mappers.impl.UserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -46,14 +48,16 @@ public class ActivityService {
     }
 
     @Transactional
-    public ActivityDTO saveActivity(ActivityDTO data) {
-        UserDTO savedUser = userService.saveUser(data.getOwner());
-        data.setOwner(savedUser);
-        AddressDTO savedAddress = addressService.createAddress(data.getLocal());
-        data.setLocal(savedAddress);
-        ActivityModel activityToSave = activityMapper.mapFrom(data);
-        ActivityModel activity = repository.save(activityToSave);
-        return activityMapper.mapTo(activity);
+    public Optional<ActivityDTO> saveActivity(ActivityPostDTO data) {
+        Optional<UserDTO> owner = userService.getUserById(data.getOwner());
+        if(owner.isPresent()){
+            ActivityDTO activityToSave = new ActivityDTO(data, owner.get());
+            ActivityModel activityModel = activityMapper.mapFrom(activityToSave);
+            ActivityModel activity = repository.save(activityModel);
+            return Optional.ofNullable(activityMapper.mapTo(activity));
+        } else{
+            return Optional.empty();
+        }
     }
 
     @Transactional

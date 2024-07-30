@@ -1,6 +1,5 @@
 package com.senac.viverbem.domain.address;
 
-import com.senac.viverbem.domain.user.UserRequestDTO;
 import jakarta.persistence.*;
 import lombok.*;
 

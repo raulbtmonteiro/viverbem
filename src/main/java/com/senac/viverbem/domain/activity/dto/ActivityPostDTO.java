@@ -1,8 +1,6 @@
-package com.senac.viverbem.domain.activity;
+package com.senac.viverbem.domain.activity.dto;
 
-
-import com.senac.viverbem.domain.address.AddressDTO;
-import com.senac.viverbem.domain.user.UserDTO;
+import com.senac.viverbem.domain.address.dto.AddressDTO;
 import lombok.*;
 
 @Data
@@ -10,13 +8,12 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class ActivityDTO {
+public class ActivityPostDTO {
 
     private Long id;
     private String title;
     private String description;
     private String datetime;
     private AddressDTO local;
-    private UserDTO owner;
+    private Long owner;
 }
-

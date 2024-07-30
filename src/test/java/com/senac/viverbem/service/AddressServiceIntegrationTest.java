@@ -1,7 +1,7 @@
 package com.senac.viverbem.service;
 
 import com.senac.viverbem.TestDataUtil;
-import com.senac.viverbem.domain.address.AddressDTO;
+import com.senac.viverbem.domain.address.dto.AddressDTO;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;

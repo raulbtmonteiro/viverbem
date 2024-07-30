@@ -1,6 +1,6 @@
 package com.senac.viverbem.mappers.impl;
 
-import com.senac.viverbem.domain.address.AddressDTO;
+import com.senac.viverbem.domain.address.dto.AddressDTO;
 import com.senac.viverbem.domain.address.AddressModel;
 import com.senac.viverbem.mappers.Mapper;
 import org.modelmapper.ModelMapper;
