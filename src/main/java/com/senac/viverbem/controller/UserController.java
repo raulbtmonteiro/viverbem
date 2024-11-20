@@ -1,12 +1,11 @@
 package com.senac.viverbem.controller;
 
+import com.senac.viverbem.domain.user.dto.SubscribeActivityDTO;
 import com.senac.viverbem.domain.user.dto.UserDTO;
 import com.senac.viverbem.domain.user.dto.UserPostDTO;
-import com.senac.viverbem.service.AddressService;
 import com.senac.viverbem.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,11 +15,9 @@ import java.util.Optional;
 @RequestMapping("/users")
 public class UserController {
 
-    private final AddressService addressService;
     private final UserService userService;
 
-    public UserController(AddressService addressService, UserService userService) {
-        this.addressService = addressService;
+    public UserController(UserService userService) {
         this.userService = userService;
     }
 
@@ -34,7 +31,7 @@ public class UserController {
     public ResponseEntity<?> getUserById(@PathVariable Long id){
         try {
             Optional<UserDTO> response = userService.getUserById(id);
-            if (response != null) {
+            if (response.isPresent()) {
                 return ResponseEntity.status(HttpStatus.OK).body(response);
             } else {
                 return ResponseEntity.notFound().build();
@@ -52,6 +49,26 @@ public class UserController {
         } catch (Exception err){
             return ResponseEntity.badRequest().body(err.getMessage());
         }
+    }
+
+    @PatchMapping("/{id}/activities")
+    public ResponseEntity subscribeActivity(@PathVariable Long id, @RequestBody SubscribeActivityDTO data){
+        if(data.action().toString().equals("subscribe")) {
+            Optional<UserDTO> response = userService.addActivity(id, data.activityId());
+            if (response.isPresent()){
+                return ResponseEntity.ok(response.get());
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Usuário não encontrado");
+            }
+        } else if (data.action().toString().equals("unsubscribe")){
+            Optional<UserDTO> response = userService.removeActivity(id, data.activityId());
+            if (response.isPresent()){
+                return ResponseEntity.ok(response.get());
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Usuário não encontrado");
+            }
+        }
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Ação não permitida");
     }
 
 //    @Transactional

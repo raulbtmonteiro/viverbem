@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -61,6 +62,42 @@ public class UserService {
             UserModel userModel = userMapper.mapFrom(user);
             userModel.setPassword(password.get());
             UserModel savedUser = repository.save(userModel);
+            return Optional.ofNullable(userMapper.mapTo(savedUser));
+        } else {
+            return Optional.empty();
+        }
+    }
+
+    public Optional<UserDTO> addActivity(Long userId, Long activityId) {
+        Optional<UserModel> user = repository.findById(userId);
+        if(user.isPresent()){
+            List<Long> list = user.get().getActivities();
+            if(list == null){
+                List<Long> newList = new ArrayList<Long>();
+                newList.add(activityId);
+                user.get().setActivities(newList);
+                UserModel savedUser = repository.save(user.get());
+                return Optional.ofNullable(userMapper.mapTo(savedUser));
+            }
+            list.add(activityId);
+            user.get().setActivities(list);
+            UserModel savedUser = repository.save(user.get());
+            return Optional.ofNullable(userMapper.mapTo(savedUser));
+        } else {
+            return Optional.empty();
+        }
+    }
+
+    public Optional<UserDTO> removeActivity(Long userId, Long activityId) {
+        Optional<UserModel> user = repository.findById(userId);
+        if(user.isPresent()){
+            List<Long> list = user.get().getActivities();
+            if(list == null){
+                return Optional.ofNullable(userMapper.mapTo(user.get()));
+            }
+            list.remove(activityId);
+            user.get().setActivities(list);
+            UserModel savedUser = repository.save(user.get());
             return Optional.ofNullable(userMapper.mapTo(savedUser));
         } else {
             return Optional.empty();

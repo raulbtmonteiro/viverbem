@@ -10,6 +10,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
+import java.util.List;
 
 @Table(name = "users")
 @Entity(name = "users")
@@ -42,6 +43,7 @@ public class UserModel implements UserDetails {
     private String phone;
     private String medications;
     private String emergencycontact;
+    private List<Long> activities;
 
     @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "address", referencedColumnName = "id")

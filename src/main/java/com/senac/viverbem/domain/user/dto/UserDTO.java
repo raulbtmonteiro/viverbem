@@ -3,6 +3,8 @@ package com.senac.viverbem.domain.user.dto;
 import com.senac.viverbem.domain.address.dto.AddressDTO;
 import lombok.*;
 
+import java.util.List;
+
 @Data
 @Builder
 @AllArgsConstructor
@@ -20,6 +22,7 @@ public class UserDTO {
     private String phone;
     private String medications;
     private String emergencycontact;
+    private List<Long> activities;
     private AddressDTO address;
 
     public UserDTO(UserPostDTO data){
